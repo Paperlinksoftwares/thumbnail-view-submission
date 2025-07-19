@@ -1,0 +1,39 @@
+.submission-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.submission-gallery-grid label {
+  position: relative;
+  display: block;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.submission-gallery-grid img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.submission-gallery-grid label:hover img {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.submission-gallery-grid input[type="checkbox"] {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  z-index: 10;
+  background: rgba(255,255,255,0.8);
+  border-radius: 2px;
+}
+form button[name="deleteimages"] {
+  margin-top: 1rem;
+}
