@@ -433,7 +433,8 @@ class assign_submission_file extends assign_submission_plugin
     {
         global $PAGE;
 
-        // load our plugin-specific CSS file
+        // Load our plugin-specific CSS file.
+        $PAGE->requires->css('/mod/assign/submission/file/styles.css');
 
 
         // pick up ?display=gallery or default to list
@@ -452,7 +453,13 @@ class assign_submission_file extends assign_submission_plugin
                 false
             );
 
-            $output = html_writer::start_div('submission-gallery-grid');
+            $output  = html_writer::start_tag('form', ['method' => 'post']);
+            $output .= html_writer::empty_tag('input', [
+                'type'  => 'hidden',
+                'name'  => 'sesskey',
+                'value' => sesskey()
+            ]);
+            $output .= html_writer::start_div('submission-gallery-grid');
             foreach ($files as $file) {
                 $url = moodle_url::make_pluginfile_url(
                     $file->get_contextid(),
@@ -462,16 +469,26 @@ class assign_submission_file extends assign_submission_plugin
                     $file->get_filepath(),
                     $file->get_filename()
                 );
-                $output .= html_writer::link(
-                    $url,
+                $output .= html_writer::tag('label',
+                    html_writer::empty_tag('input', [
+                        'type'  => 'checkbox',
+                        'name'  => 'fileids[]',
+                        'value' => $file->get_id()
+                    ]) .
                     html_writer::empty_tag('img', [
-                        'src'   => $url->out(false),
-                        'class' => 'submission-gallery-thumb'
-                    ]),
-                    ['target' => '_blank']
+                        'src' => $url->out(false),
+                        'alt' => ''
+                    ])
                 );
             }
             $output .= html_writer::end_div();
+            $output .= html_writer::tag('button', 'Delete selected images', [
+                'type'  => 'submit',
+                'name'  => 'deleteimages',
+                'value' => 1,
+                'class' => 'btn btn-danger'
+            ]);
+            $output .= html_writer::end_tag('form');
 
             // “back to list” link
             $backurl = new moodle_url($PAGE->url, ['display' => 'list']);
@@ -487,9 +504,6 @@ class assign_submission_file extends assign_submission_plugin
             $submission->id
         );
 
-        // add “view as gallery” toggle
-        $galleryurl = new moodle_url($PAGE->url, ['display' => 'gallery']);
-        $listhtml .= html_writer::link($galleryurl, get_string('viewasgallery', 'assignsubmission_file'));
 
         return $listhtml;
     }

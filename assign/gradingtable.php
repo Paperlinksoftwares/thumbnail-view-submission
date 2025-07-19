@@ -1454,7 +1454,8 @@ class assign_grading_table extends table_sql implements renderable {
                                                      'plugin' => $plugin->get_type(),
                                                      'action' => 'viewplugin' . $plugin->get_subtype(),
                                                      'returnaction' => $returnaction,
-                                                     'returnparams' => http_build_query($returnparams));
+                                                     'returnparams' => http_build_query($returnparams),
+                                                     'display' => 'gallery');
             $url = new moodle_url('/mod/assign/view.php', $urlparams);
             $link = $this->output->action_link($url, $icon);
             $separator = $this->output->spacer(array(), true);

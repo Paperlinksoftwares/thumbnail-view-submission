@@ -24,6 +24,7 @@
 
 require_once('../../config.php');
 require_once($CFG->dirroot . '/mod/assign/locallib.php');
+require_once($CFG->dirroot . '/mod/assign/submission/file/locallib.php');
 
 $id = required_param('id', PARAM_INT);
 
@@ -34,6 +35,20 @@ require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 
 require_capability('mod/assign:view', $context);
+
+$deleteimages = optional_param('deleteimages', false, PARAM_BOOL);
+$fileids      = optional_param_array('fileids', [], PARAM_INT);
+if ($deleteimages && !empty($fileids)) {
+    require_sesskey();
+    require_capability('mod/assign:grade', $context);
+    $fs = get_file_storage();
+    foreach ($fileids as $fileid) {
+        if ($file = $fs->get_file_by_id($fileid)) {
+            $file->delete();
+        }
+    }
+    redirect(new moodle_url('/mod/assign/view.php', ['id' => $id]), get_string('filesdeleted', 'assignsubmission_file'), 0);
+}
 
 $assign = new assign($context, $cm, $course);
 $urlparams = array(
